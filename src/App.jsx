@@ -6,7 +6,7 @@ import FileUpload from './FileUpload';
 function App() {
     return (
         <div className="App">
-            <h1>Quiz Generator</h1>
+            <h1>Doc2Quiz</h1>
             <FileUpload />
         </div>
     );
