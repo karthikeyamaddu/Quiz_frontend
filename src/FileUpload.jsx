@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import './QuizStyles.css';
 import { motion, AnimatePresence } from 'framer-motion';
 import Confetti from 'react-confetti';
+import { API_ENDPOINTS, apiCall } from './config/api';
 
 const FileUpload = () => {
   const [quizQuestions, setQuizQuestions] = useState([]);
@@ -70,13 +71,21 @@ const FileUpload = () => {
     formData.append('file', file);
 
     try {
-      const response = await fetch('https://quiz-app-cfhf.onrender.com/upload', {
+      const response = await fetch(API_ENDPOINTS.UPLOAD, {
         method: 'POST',
         body: formData,
       });
-      if (!response.ok) throw new Error('Failed to upload file');
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(
+          errorData.message || `Server error: ${response.status} ${response.statusText}`
+        );
+      }
+
       const data = await response.json();
       if (data.error) throw new Error(data.error);
+
       setLoadingProgress(100);
       setTimeout(() => {
         setQuizId(data.quizId);
@@ -86,7 +95,16 @@ const FileUpload = () => {
         setLoading(false);
       }, 500);
     } catch (err) {
-      setError(err.message);
+      let errorMessage = err.message;
+
+      // Handle specific error types
+      if (err.message.includes('Failed to fetch')) {
+        errorMessage = 'Connection error: Unable to reach the server. Make sure the backend is running.';
+      } else if (err.message.includes('CORS')) {
+        errorMessage = 'CORS error: Backend is not configured to accept requests from this origin.';
+      }
+
+      setError(errorMessage);
       setLoading(false);
     }
   };
@@ -153,7 +171,7 @@ const FileUpload = () => {
     setResultAnalytics({ questionAnalytics, timeSpent, averageTimePerQuestion: timeSpent / quizQuestions.length });
 
     try {
-      const response = await fetch('https://quiz-app-cfhf.onrender.com/submit-result', {
+      const response = await fetch(API_ENDPOINTS.SUBMIT, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ quizId, selectedAnswers, score: totalScore, totalQuestions: quizQuestions.length, timeSpent }),
@@ -168,7 +186,7 @@ const FileUpload = () => {
 
   const fetchQuizStats = async () => {
     try {
-      const response = await fetch(`https://quiz-app-cfhf.onrender.com/quiz-stats/${quizId}`);
+      const response = await fetch(API_ENDPOINTS.STATS(quizId));
       if (!response.ok) throw new Error('Failed to fetch stats');
       setQuizStats(await response.json());
     } catch (err) {

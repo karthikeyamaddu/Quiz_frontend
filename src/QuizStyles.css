@@ -7,13 +7,15 @@
 
 .futuristic-container {
   min-height: 100vh;
+  width: 100vw;
   padding: 2rem;
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow-x: hidden;
+  overflow: hidden; /* Changed from overflow-x to just overflow */
   position: relative;
   transition: background 0.5s, color 0.5s;
+  width: 100%;
 }
 
 .theme-cyber { background: radial-gradient(circle, #0d0d0d, #1a1a1a); color: #fff; }
@@ -34,6 +36,22 @@
   50% { transform: translateY(-1.5rem); }
 }
 
+.particle:nth-child(1) { top: 5%; left: 10%; }
+.particle:nth-child(2) { top: 15%; left: 20%; }
+.particle:nth-child(3) { top: 25%; left: 35%; }
+.particle:nth-child(4) { top: 80%; left: 10%; }
+.particle:nth-child(5) { top: 60%; left: 80%; }
+.particle:nth-child(6) { top: 90%; left: 40%; }
+.particle:nth-child(7) { top: 10%; left: 90%; }
+.particle:nth-child(8) { top: 50%; left: 60%; }
+.particle:nth-child(9) { top: 30%; left: 75%; }
+.particle:nth-child(10) { top: 70%; left: 25%; }
+.particle:nth-child(11) { top: 40%; left: 10%; }
+.particle:nth-child(12) { top: 85%; left: 85%; }
+.particle:nth-child(13) { top: 20%; left: 50%; }
+.particle:nth-child(14) { top: 75%; left: 70%; }
+.particle:nth-child(15) { top: 45%; left: 30%; }
+
 .theme-toggle {
   position: absolute;
   top: 1rem;
@@ -45,7 +63,7 @@
 .theme-icon { font-size: 1.5rem; }
 
 .content-wrapper {
-  max-width: 50rem;
+  max-width: 1000px; /*Increased from 50rem for desktop*/
   width: 100%;
   padding: 2.5rem;
   border-radius: 1rem;
@@ -336,3 +354,57 @@
 .theme-minimal .review-option.selected { border-color: #007bff; }
 .review-option.correct { background: rgba(0, 255, 0, 0.2); }
 .review-option.incorrect { background: rgba(255, 0, 0, 0.2); }
+
+/* Responsive adjustments for desktop */
+@media (min-width: 1024px) {
+  .futuristic-container {
+    padding: 1rem 2rem;
+  }
+  
+  .content-wrapper {
+    padding: 3rem;
+  }
+  
+  .quiz-interface {
+    max-width: 900px;
+    margin: 2rem auto;
+  }
+  
+  .options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+  
+  .option {
+    height: 100%;
+    display: flex;
+    align-items: center;
+  }
+  
+  .results {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .upload-container {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .upload-box {
+    padding: 3rem;
+  }
+}
+
+/* Fix for hint positioning in desktop grid layout */
+@media (min-width: 1024px) {
+  .option {
+    position: relative;
+  }
+  
+  .hint {
+    width: 90%;
+    z-index: 10;
+  }
+}
